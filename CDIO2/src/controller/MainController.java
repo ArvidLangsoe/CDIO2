@@ -108,7 +108,6 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		case SOFTBUTTON:
 			break;
 		case TARA:
-//			socketHandler.sendMessage(new SocketOutMessage("TA test"));
 			weightController.showMessagePrimaryDisplay("TA test");
 			break;
 		case TEXT:
