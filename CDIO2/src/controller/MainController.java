@@ -19,7 +19,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 	private IWeightInterfaceController weightController;
 	private KeyState keyState = KeyState.K1;
 	private double weight;
-	private String input;
+	private String input; //SocketOutMessage???
 
 	public MainController(ISocketController socketHandler, IWeightInterfaceController uiController) {
 		this.init(socketHandler, uiController);
@@ -67,7 +67,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 			break;
 		case S:
 			break;
-		case T:
+		case T: 
 			break;
 		case DW:
 			break;
@@ -108,7 +108,8 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		case SOFTBUTTON:
 			break;
 		case TARA:
-			weightController.showMessagePrimaryDisplay("TA test");
+			socketHandler.sendMessage(new SocketOutMessage("T S " + weight + "\n" ));
+			notifyWeightChange(1000);
 			break;
 		case TEXT:
 			break;
@@ -130,7 +131,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 	@Override
 	public void notifyWeightChange(double newWeight) {
 		weight = newWeight;
-		weightController.showMessagePrimaryDisplay("1.00");
+		weightController.showMessagePrimaryDisplay(weight + "");
 	}
 
 }
