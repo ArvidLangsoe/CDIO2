@@ -1,6 +1,6 @@
 package socket;
 
-public interface ISocketController {
+public interface IServerSocketController {
 
 	public void sendCommand(String command);
 	public String getLine();
