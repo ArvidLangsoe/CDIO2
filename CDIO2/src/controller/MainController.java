@@ -38,9 +38,13 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		if (socketHandler!=null && weightController!=null){
 			//Makes this controller interested in messages from the socket
 			socketHandler.registerObserver(this);
+		
 			
 			//Starts socketHandler in own thread
 			new Thread(socketHandler).start();
+			
+			//Makes this controller interested in messages from the GUI
+			weightController.registerObserver(this);
 
 			//Starts weightController in own thread
 			new Thread(weightController).start();
