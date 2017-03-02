@@ -75,6 +75,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 			handleKMessage(message);
 			break;
 		case P111:
+			weightController.showMessageSecondaryDisplay(message.getMessage()); 
 			break;
 		}
 
@@ -107,6 +108,8 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		case SOFTBUTTON:
 			break;
 		case TARA:
+//			socketHandler.sendMessage(new SocketOutMessage("TA test"));
+			weightController.showMessagePrimaryDisplay("TA test");
 			break;
 		case TEXT:
 			break;
@@ -127,8 +130,8 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 
 	@Override
 	public void notifyWeightChange(double newWeight) {
-		// TODO Auto-generated method stub
-
+		weight = newWeight;
+		weightController.showMessagePrimaryDisplay("1.00");
 	}
 
 }
