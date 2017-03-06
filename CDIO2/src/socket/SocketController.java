@@ -31,7 +31,11 @@ public class SocketController implements ISocketController {
 	public void sendMessage(SocketOutMessage message) {
 		if (outStream != null) {
 			if(message != null)
-				sendResponse(message.getMessage());
+				try{
+					outStream.writeBytes(message.getMessage() + "\n");
+				}catch (IOException e){
+					System.out.println("Cannot send response to the Socket Client \n" + e.getMessage());
+				}
 		} else {
 			System.out.println("The connection between the server and the client is closed !");
 		}
@@ -89,12 +93,17 @@ public class SocketController implements ISocketController {
 					// Special Type
 					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty())) {
 
-						String displayMessage = commandLine[1].split("\"")[1];
+						try{
+							String displayMessage = commandLine[1].split("\"")[1];
 
-						System.out.println("The GUI shall display : " + '"' + displayMessage + '"' + " and is now waiting for GUI response.");
+							System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
 
-						notifyObservers(new SocketInMessage(SocketMessageType.RM208, displayMessage));
-						responseType = null;
+							notifyObservers(new SocketInMessage(SocketMessageType.RM208, displayMessage));
+							responseType = null;
+
+						}catch(ArrayIndexOutOfBoundsException e){
+							responseType = " ES";
+						}
 
 					} else {
 						responseType = " ES";
@@ -106,16 +115,22 @@ public class SocketController implements ISocketController {
 					// TODO Refactor to make sure that faulty messages doesn't
 					// break the system.
 
-					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty()) && commandLine[1].length() <= 7) {
-						String displayMessage = commandLine[1].split("\"")[1];
+					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty()) && commandLine[1].length() <= 8) {
 
-						System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
+						try{
+							String displayMessage = commandLine[1].split("\"")[1];
 
-						notifyObservers(new SocketInMessage(SocketMessageType.D, displayMessage));
-						responseType = " A";
-					} else {
+							System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
+
+							notifyObservers(new SocketInMessage(SocketMessageType.D, displayMessage));
+							responseType = " A";
+
+						}catch(ArrayIndexOutOfBoundsException e){
+							responseType = " ES";
+						}
+
+					} else
 						responseType = " ES";
-					}
 					break;
 				case "DW": // Command to clear the primary display on the
 					// weight.
@@ -131,12 +146,17 @@ public class SocketController implements ISocketController {
 
 					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty()) && commandLine[1].length() <= 32) {
 
-						String displayMessage = commandLine[1].split("\"")[1];
+						try{
+							String displayMessage = commandLine[1].split("\"")[1];
 
-						System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
+							System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
 
-						notifyObservers(new SocketInMessage(SocketMessageType.P111, displayMessage));
-						responseType = " A";
+							notifyObservers(new SocketInMessage(SocketMessageType.P111, displayMessage));
+							responseType = " A";
+
+						}catch(ArrayIndexOutOfBoundsException e){
+							responseType = " ES";
+						}
 					} else {
 						responseType = " ES";
 					}
@@ -180,6 +200,7 @@ public class SocketController implements ISocketController {
 					if (inLine.split(" ").length > 1) {
 						notifyObservers(new SocketInMessage(SocketMessageType.K, inLine.split(" ")[1]));
 					}
+					
 					break;
 				case "B": // Set the load
 					// TODO implement
@@ -191,8 +212,8 @@ public class SocketController implements ISocketController {
 
 						try{
 							Double.parseDouble(displayMessage);
-							notifyObservers(new SocketInMessage(SocketMessageType.P111, displayMessage));
-							
+							notifyObservers(new SocketInMessage(SocketMessageType.B, displayMessage));
+
 							cmd = "D";
 							responseType = "B";
 						}catch (Exception e){
@@ -208,6 +229,7 @@ public class SocketController implements ISocketController {
 
 					notifyObservers(new SocketInMessage(SocketMessageType.Q, ""));
 					break;
+					
 				default: // Something went wrong?
 					// TODO implement
 					responseType = " ES";
@@ -215,7 +237,15 @@ public class SocketController implements ISocketController {
 				}
 
 				if(responseType != null)
-					sendResponse(cmd + responseType);
+					switch(responseType){
+					case " ES": 
+						sendMessage(new SocketOutMessage("ES"));
+						break;
+
+					default:
+						sendMessage(new SocketOutMessage(cmd + responseType));
+						break;
+					}
 			}
 		} catch (IOException e) {
 			// TODO maybe notify mainController?
@@ -226,14 +256,6 @@ public class SocketController implements ISocketController {
 	private void notifyObservers(SocketInMessage message) {
 		for (ISocketObserver socketObserver : observers) {
 			socketObserver.notify(message);
-		}
-	}
-	//Returns the response to the outStream.
-	private void sendResponse(String message) {
-		try{
-			outStream.writeBytes(message + "\n");
-		}catch (IOException e){
-			System.out.println("Cannot send response to the Socket Client \n" + e.getMessage());
 		}
 	}
 
