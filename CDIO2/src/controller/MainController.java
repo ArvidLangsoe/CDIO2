@@ -66,10 +66,14 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		case RM208:
 			break;
 		case S:
+			socketHandler.sendMessage(new SocketOutMessage("S S " + weight + " kg\n"));
 			break;
 		case T: 
+			socketHandler.sendMessage(new SocketOutMessage("T S " + weight + " kg\n" ));
+			notifyWeightChange(0);
 			break;
 		case DW:
+			
 			break;
 		case K:
 			handleKMessage(message);
@@ -108,8 +112,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		case SOFTBUTTON:
 			break;
 		case TARA:
-			socketHandler.sendMessage(new SocketOutMessage("T S " + weight + "\n" ));
-			notifyWeightChange(1000);
+			
 			break;
 		case TEXT:
 			break;
@@ -118,6 +121,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		case C:
 			break;
 		case EXIT:
+			System.exit(0);
 			break;
 		case SEND:
 			if (keyState.equals(KeyState.K4) || keyState.equals(KeyState.K3) ){
