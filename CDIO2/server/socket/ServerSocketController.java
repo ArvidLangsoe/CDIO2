@@ -34,6 +34,8 @@ public class ServerSocketController implements IServerSocketController {
 	public String getLine() {
 		String weightMessage=null;
 		try {
+			while(!inFromWeight.ready());
+			
 			weightMessage =inFromWeight.readLine();
 			
 		} catch (IOException e) {
