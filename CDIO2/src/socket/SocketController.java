@@ -30,9 +30,10 @@ public class SocketController implements ISocketController {
 	@Override
 	public void sendMessage(SocketOutMessage message) {
 		if (outStream != null) {
-			// TODO send something over the socket!
+			if(message != null)
+				sendResponse(message.getMessage());
 		} else {
-			// TODO maybe tell someone that connection is closed?
+			System.out.println("The connection between the server and the client is closed !");
 		}
 	}
 
@@ -52,7 +53,7 @@ public class SocketController implements ISocketController {
 	}
 
 	private void waitForConnections(ServerSocket listeningSocket) {
-		System.out.println("Server opened, waiting ...");
+		System.out.println("Socket Server opened, waiting ...");
 		try {
 			Socket activeSocket = listeningSocket.accept(); // Blocking call
 			inStream = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()));
@@ -70,26 +71,40 @@ public class SocketController implements ISocketController {
 					break;
 				String[] commandLine = inLine.split(" ", 2);
 				String cmd = commandLine[0];
-				String responseType = "";
+				
+				String responseType = ""; //used to know what the server socket shall
+				// send to the client socket after retrieving a request from it.
+				// Set this value to null means that the response could not be sent
+				// at this moment because needs some others values from the rest of the program
 
 				switch (cmd) {
+
 				case "RM20": // Display a message in the secondary display and
-								// wait for response
+					// wait for response
 					// TODO implement logic for RM command
 
 					// Special Type
-					responseType = null;
+					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty())) {
+
+						String displayMessage = commandLine[1].split("\"")[1];
+
+						System.out.println("The GUI shall display : " + '"' + displayMessage + '"' + " and is now waiting for GUI response.");
+
+						notifyObservers(new SocketInMessage(SocketMessageType.RM208, displayMessage));
+						responseType = null;
+						
+					} else {
+						responseType = " ES";
+					}
 
 					break;
 				case "D":// Command to display a user-made message on the
-							// primary display using the "D" command.
+					// primary display using the "D" command.
 					// TODO Refactor to make sure that faulty messages doesn't
 					// break the system.
 
-					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty())) {
-
-						String displayMessage = commandLine[1].replace('"', '#');
-						displayMessage = displayMessage.split("#")[1];
+					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty()) && commandLine[1].length() <= 7) {
+						String displayMessage = commandLine[1].split("\"")[1];
 
 						System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
 
@@ -100,7 +115,7 @@ public class SocketController implements ISocketController {
 					}
 					break;
 				case "DW": // Command to clear the primary display on the
-							// weight.
+					// weight.
 					// TODO implement
 					notifyObservers(new SocketInMessage(SocketMessageType.DW, ""));
 
@@ -108,13 +123,12 @@ public class SocketController implements ISocketController {
 
 					break;
 				case "P111": // Command to show a message in the secondary
-								// display.
+					// display.
 					// TODO implement
 
 					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty()) && commandLine[1].length() <= 32) {
 
 						String displayMessage = commandLine[1].split("\"")[1];
-						// displayMessage = displayMessage.split("#")[1];
 
 						System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
 
@@ -126,16 +140,16 @@ public class SocketController implements ISocketController {
 
 					break;
 				case "T": // Tares the currently read weight of nothing but an
-							// empty container on the scale.
+					// empty container on the scale.
 					// TODO implement
-					notifyObservers(new SocketInMessage(SocketMessageType.T, ""));
+					notifyObservers(new SocketInMessage(SocketMessageType.T, "T S"));
 
 					// Special type
-					responseType = " S";
+					responseType = null;
 
 					break;
 				case "S": // Command to request the current load on the weight
-							// to be displayed.
+					// to be displayed.
 					// TODO implement
 					notifyObservers(new SocketInMessage(SocketMessageType.S, ""));
 
@@ -180,7 +194,9 @@ public class SocketController implements ISocketController {
 					responseType = " ES";
 					break;
 				}
-				sendResponse(cmd + responseType);
+				
+				if(responseType != null)
+					sendResponse(cmd + responseType);
 			}
 		} catch (IOException e) {
 			// TODO maybe notify mainController?
@@ -194,8 +210,12 @@ public class SocketController implements ISocketController {
 		}
 	}
 	//Returns the response to the outStream.
-	private void sendResponse(String message) throws IOException {
-		outStream.writeBytes(message + "\n");
+	private void sendResponse(String message) {
+		try{
+			outStream.writeBytes(message + "\n");
+		}catch (IOException e){
+			System.out.println("Cannot send response to the Socket Client \n" + e.getMessage());
+		}
 	}
 
 }
