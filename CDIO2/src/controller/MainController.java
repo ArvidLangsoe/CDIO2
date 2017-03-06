@@ -69,6 +69,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 			System.exit(0);
 			break;
 		case RM204:
+			//Not implemented.
 			break;
 		case RM208:
 			weightController.showMessageSecondaryDisplay(message.getMessage());
