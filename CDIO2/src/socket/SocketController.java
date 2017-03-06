@@ -91,6 +91,8 @@ public class SocketController implements ISocketController {
 					// TODO implement logic for RM command
 
 					// Special Type
+					
+					//TODO number of "
 					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty())) {
 
 						try{
