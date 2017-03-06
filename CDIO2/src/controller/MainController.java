@@ -38,12 +38,11 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		if (socketHandler!=null && weightController!=null){
 			//Makes this controller interested in messages from the socket
 			socketHandler.registerObserver(this);
-		
 			
 			//Starts socketHandler in own thread
 			new Thread(socketHandler).start();
-			
-			//Makes this controller interested in messages from the GUI
+
+		//Makes this controller interested in messages from the GUI
 			weightController.registerObserver(this);
 
 			//Starts weightController in own thread
@@ -64,17 +63,20 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 			weightController.showMessagePrimaryDisplay(message.getMessage()); 
 			break;
 		case Q:
-			
 			break;
 		case RM204:
 			break;
 		case RM208:
 			break;
 		case S:
+			socketHandler.sendMessage(new SocketOutMessage("S S " + weight + " kg\n"));
 			break;
 		case T: 
+			socketHandler.sendMessage(new SocketOutMessage("T S " + weight + " kg\n" ));
+			notifyWeightChange(0);
 			break;
 		case DW:
+			
 			break;
 		case K:
 			handleKMessage(message);
@@ -113,8 +115,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		case SOFTBUTTON:
 			break;
 		case TARA:
-			socketHandler.sendMessage(new SocketOutMessage("T S " + weight + " kg\n" ));
-			notifyWeightChange(0);
+			
 			break;
 		case TEXT:
 			break;
@@ -137,7 +138,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 	@Override
 	public void notifyWeightChange(double newWeight) {
 		weight = newWeight;
-		weightController.showMessagePrimaryDisplay(weight + " kg");
+		weightController.showMessagePrimaryDisplay(weight + "");
 	}
 
 }
