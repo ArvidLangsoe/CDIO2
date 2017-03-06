@@ -58,11 +58,14 @@ public class SocketController implements ISocketController {
 			Socket activeSocket = listeningSocket.accept(); // Blocking call
 			inStream = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()));
 			outStream = new DataOutputStream(activeSocket.getOutputStream());
+			
 			String inLine;
+			
 			// .readLine is a blocking call
 			// TODO How do you handle simultaneous input and output on socket?
 			// TODO this only allows for one open connection - how would you
 			// handle multiple connections?
+			
 			System.out.println(activeSocket.getRemoteSocketAddress() + "> Client connected to the server");
 			while (true) {
 				inLine = inStream.readLine();
@@ -173,7 +176,6 @@ public class SocketController implements ISocketController {
 
 					// K4: The function is completed, and the function's code is
 					// sent.
-					responseType = " A";
 
 					if (inLine.split(" ").length > 1) {
 						notifyObservers(new SocketInMessage(SocketMessageType.K, inLine.split(" ")[1]));
@@ -181,8 +183,19 @@ public class SocketController implements ISocketController {
 					break;
 				case "B": // Set the load
 					// TODO implement
+					if(!(commandLine[1].isEmpty())){
+					
+					String displayMessage = commandLine[1];
+					
+					System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
+
+					notifyObservers(new SocketInMessage(SocketMessageType.P111, displayMessage));
+
 					cmd = "D";
-					responseType = " B";
+					responseType = "B";
+					}else{
+						responseType = " ES";
+					}
 
 					break;
 				case "Q": // Quit
