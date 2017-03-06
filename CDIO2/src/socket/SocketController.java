@@ -58,14 +58,14 @@ public class SocketController implements ISocketController {
 			Socket activeSocket = listeningSocket.accept(); // Blocking call
 			inStream = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()));
 			outStream = new DataOutputStream(activeSocket.getOutputStream());
-			
+
 			String inLine;
-			
+
 			// .readLine is a blocking call
 			// TODO How do you handle simultaneous input and output on socket?
 			// TODO this only allows for one open connection - how would you
 			// handle multiple connections?
-			
+
 			System.out.println(activeSocket.getRemoteSocketAddress() + "> Client connected to the server");
 			while (true) {
 				inLine = inStream.readLine();
@@ -74,7 +74,7 @@ public class SocketController implements ISocketController {
 					break;
 				String[] commandLine = inLine.split(" ", 2);
 				String cmd = commandLine[0];
-				
+
 				String responseType = ""; //used to know what the server socket shall
 				// send to the client socket after retrieving a request from it.
 				// Set this value to null means that the response could not be sent
@@ -95,7 +95,7 @@ public class SocketController implements ISocketController {
 
 						notifyObservers(new SocketInMessage(SocketMessageType.RM208, displayMessage));
 						responseType = null;
-						
+
 					} else {
 						responseType = " ES";
 					}
@@ -184,15 +184,20 @@ public class SocketController implements ISocketController {
 				case "B": // Set the load
 					// TODO implement
 					if(!(commandLine[1].isEmpty())){
-					
-					String displayMessage = commandLine[1];
-					
-					System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
 
-					notifyObservers(new SocketInMessage(SocketMessageType.P111, displayMessage));
+						String displayMessage = commandLine[1];
 
-					cmd = "D";
-					responseType = "B";
+						System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
+
+						try{
+							Double.parseDouble(displayMessage);
+							notifyObservers(new SocketInMessage(SocketMessageType.P111, displayMessage));
+							
+							cmd = "D";
+							responseType = "B";
+						}catch (Exception e){
+							responseType = " ES";
+						}
 					}else{
 						responseType = " ES";
 					}
@@ -200,14 +205,15 @@ public class SocketController implements ISocketController {
 					break;
 				case "Q": // Quit
 					responseType = " A";
-					// TODO implement
+
+					notifyObservers(new SocketInMessage(SocketMessageType.Q, ""));
 					break;
 				default: // Something went wrong?
 					// TODO implement
 					responseType = " ES";
 					break;
 				}
-				
+
 				if(responseType != null)
 					sendResponse(cmd + responseType);
 			}
