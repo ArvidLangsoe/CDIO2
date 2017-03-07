@@ -57,7 +57,7 @@ public class Main {
 		}
 		for(int i =0; weightReturnAmount<i ;i++)
 		{
-			controller.manualGetLine();
+			System.out.println(controller.manualGetLine());
 		}
 		manualCommand(controller);
 	}
