@@ -13,10 +13,9 @@ import socket.SocketInMessage.SocketMessageType;
 
 public class SocketController implements ISocketController {
 	Set<ISocketObserver> observers = new HashSet<ISocketObserver>();
-	//TODO Maybe add some way to keep track of multiple connections?
+	// TODO Maybe add some way to keep track of multiple connections?
 	private BufferedReader inStream;
 	private DataOutputStream outStream;
-
 
 	@Override
 	public void registerObserver(ISocketObserver observer) {
@@ -30,137 +29,228 @@ public class SocketController implements ISocketController {
 
 	@Override
 	public void sendMessage(SocketOutMessage message) {
-		if (outStream!=null){
-			//TODO send something over the socket! 
+		if (outStream != null) {
+			if(message != null)
+				try{
+					outStream.writeBytes(message.getMessage() + "\n");
+				}catch (IOException e){
+					System.out.println("Cannot send response to the Socket Client \n" + e.getMessage());
+				}
 		} else {
-			//TODO maybe tell someone that connection is closed?
+			System.out.println("The connection between the server and the client is closed !");
 		}
 	}
 
 	@Override
 	public void run() {
-		//TODO some logic for listening to a socket //(Using try with resources for auto-close of socket)
-		try (ServerSocket listeningSocket = new ServerSocket(Port)){ 
-			while (true){
-				waitForConnections(listeningSocket); 	
-			}		
+		// TODO some logic for listening to a socket //(Using try with resources
+		// for auto-close of socket)
+		try (ServerSocket listeningSocket = new ServerSocket(Port)) {
+			while (true) {
+				waitForConnections(listeningSocket);
+			}
 		} catch (IOException e1) {
 			// TODO Maybe notify MainController?
 			e1.printStackTrace();
-		} 
-
+		}
 
 	}
 
 	private void waitForConnections(ServerSocket listeningSocket) {
-		System.out.println("Server opened, waiting ...");
+		System.out.println("Socket Server opened, waiting ...");
 		try {
-			Socket activeSocket = listeningSocket.accept(); //Blocking call
+			Socket activeSocket = listeningSocket.accept(); // Blocking call
 			inStream = new BufferedReader(new InputStreamReader(activeSocket.getInputStream()));
 			outStream = new DataOutputStream(activeSocket.getOutputStream());
+
 			String inLine;
-			//.readLine is a blocking call 
-			//TODO How do you handle simultaneous input and output on socket?
-			//TODO this only allows for one open connection - how would you handle multiple connections?
-			System.out.println(activeSocket.getRemoteSocketAddress()+"> Client connected to the server");
-			while (true){
+
+			// .readLine is a blocking call
+			// TODO How do you handle simultaneous input and output on socket?
+			// TODO this only allows for one open connection - how would you
+			// handle multiple connections?
+
+			System.out.println(activeSocket.getRemoteSocketAddress() + "> Client connected to the server");
+			while (true) {
 				inLine = inStream.readLine();
 				System.out.println(inLine);
-				if (inLine==null) break;
+				if (inLine == null)
+					break;
 				String[] commandLine = inLine.split(" ", 2);
-				String cmd=commandLine[0];
-				String responseType = "";
+				String cmd = commandLine[0];
+
+				String responseType = ""; //used to know what the server socket shall
+				// send to the client socket after retrieving a request from it.
+				// Set this value to null means that the response could not be sent
+				// at this moment because needs some others values from the rest of the program
 
 				switch (cmd) {
-				case "RM20": // Display a message in the secondary display and wait for response
-					//TODO implement logic for RM command
 
-					//Special Type
-					responseType = null;
+				case "RM20": // Display a message in the secondary display and
+					// wait for response
+					// TODO implement logic for RM command
 
-					break;
-				case "D":// Display a message in the primary display
-					//TODO Refactor to make sure that faulty messages doesn't break the system
-					if( inLine.split(" ").length > 1 && !(commandLine[1].isEmpty())){
+					// Special Type
+					
+					//TODO number of "
+					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty())) {
 
-						String displayMessage = commandLine[1].replace('"', '#');
-						displayMessage = displayMessage.split("#")[1];
+						try{
+							String displayMessage = commandLine[1].split("\"")[1];
 
-						System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
+							System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
 
-						notifyObservers(new SocketInMessage(SocketMessageType.D, displayMessage));
-						responseType = " A";
-					}else{
+							notifyObservers(new SocketInMessage(SocketMessageType.RM208, displayMessage));
+							responseType = null;
+
+						}catch(ArrayIndexOutOfBoundsException e){
+							responseType = " ES";
+						}
+
+					} else {
 						responseType = " ES";
 					}
+
 					break;
-				case "DW": //Clear primary display
-					//TODO implement
+				case "D":// Command to display a user-made message on the
+					// primary display using the "D" command.
+					// TODO Refactor to make sure that faulty messages doesn't
+					// break the system.
+
+					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty()) && commandLine[1].length() <= 8) {
+
+						try{
+							String displayMessage = commandLine[1].split("\"")[1];
+
+							System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
+
+							notifyObservers(new SocketInMessage(SocketMessageType.D, displayMessage));
+							responseType = " A";
+
+						}catch(ArrayIndexOutOfBoundsException e){
+							responseType = " ES";
+						}
+
+					} else
+						responseType = " ES";
+					break;
+				case "DW": // Command to clear the primary display on the
+					// weight.
+					// TODO implement
 					notifyObservers(new SocketInMessage(SocketMessageType.DW, ""));
 
 					responseType = " A";
 
 					break;
-				case "P111": //Show something in secondary display
-					//TODO implement
+				case "P111": // Command to show a message in the secondary
+					// display.
+					// TODO implement
 
-					if(inLine.split(" ").length > 1 && !(commandLine[1].isEmpty()) 
-							&& commandLine[1].length() <= 32){
+					if (inLine.split(" ").length > 1 && !(commandLine[1].isEmpty()) && commandLine[1].length() <= 32) {
 
-						String displayMessage = commandLine[1].split("\"")[1];
-						//displayMessage = displayMessage.split("#")[1];
+						try{
+							String displayMessage = commandLine[1].split("\"")[1];
+
+							System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
+
+							notifyObservers(new SocketInMessage(SocketMessageType.P111, displayMessage));
+							responseType = " A";
+
+						}catch(ArrayIndexOutOfBoundsException e){
+							responseType = " ES";
+						}
+					} else {
+						responseType = " ES";
+					}
+
+					break;
+				case "T": // Tares the currently read weight of nothing but an
+					// empty container on the scale.
+					// TODO implement
+					notifyObservers(new SocketInMessage(SocketMessageType.T, "T S"));
+
+					// Special type
+					responseType = null;
+
+					break;
+				case "S": // Command to request the current load on the weight
+					// to be displayed.
+					// TODO implement
+					notifyObservers(new SocketInMessage(SocketMessageType.S, ""));
+
+					// Special type
+					responseType = " S";
+
+					break;
+				case "K":
+
+					// Changes the weights current button-mode between one of
+					// four possible.
+
+					// K1: The function is completed, but the function's code is
+					// not sent (Standard).
+
+					// K2: The function is not completed, and the function's
+					// code is not sent (Buttons are inactive).
+
+					// K3: The function is not completed, but the function's
+					// code is sent.
+
+					// K4: The function is completed, and the function's code is
+					// sent.
+
+					if (inLine.split(" ").length > 1) {
+						notifyObservers(new SocketInMessage(SocketMessageType.K, inLine.split(" ")[1]));
+					}
+					
+					break;
+				case "B": // Set the load
+					// TODO implement
+					if(!(commandLine[1].isEmpty())){
+
+						String displayMessage = commandLine[1];
 
 						System.out.println("The GUI shall display : " + '"' + displayMessage + '"');
 
-						notifyObservers(new SocketInMessage(SocketMessageType.P111, displayMessage));
-						responseType = " A";
+						try{
+							Double.parseDouble(displayMessage);
+							notifyObservers(new SocketInMessage(SocketMessageType.B, displayMessage));
+
+							cmd = "D";
+							responseType = "B";
+						}catch (Exception e){
+							responseType = " ES";
+						}
 					}else{
 						responseType = " ES";
 					}
 
 					break;
-				case "T": // Tare the weight
-					//TODO implement
-					notifyObservers(new SocketInMessage(SocketMessageType.T, ""));
-
-					//Special type
-					responseType = " S";
-
-					break;
-				case "S": // Request the current load
-					//TODO implement
-					notifyObservers(new SocketInMessage(SocketMessageType.S, ""));
-
-					//Special type
-					responseType = " S";
-
-					break;
-				case "K":
+				case "Q": // Quit
 					responseType = " A";
 
-					if (inLine.split(" ").length>1){
-						notifyObservers(new SocketInMessage(SocketMessageType.K, inLine.split(" ")[1]));
-					}
+					notifyObservers(new SocketInMessage(SocketMessageType.Q, ""));
 					break;
-				case "B": // Set the load
-					//TODO implement
-					cmd = "D";
-					responseType = " B";
-
-					break;
-				case "Q": // Quit
-					responseType=" A";
-					//TODO implement
-					break;
-				default: //Something went wrong?
-					//TODO implement
+					
+				default: // Something went wrong?
+					// TODO implement
 					responseType = " ES";
 					break;
 				}
-				sendResponse(cmd + responseType);
+
+				if(responseType != null)
+					switch(responseType){
+					case " ES": 
+						sendMessage(new SocketOutMessage("ES"));
+						break;
+
+					default:
+						sendMessage(new SocketOutMessage(cmd + responseType));
+						break;
+					}
 			}
 		} catch (IOException e) {
-			//TODO maybe notify mainController?
+			// TODO maybe notify mainController?
 			e.printStackTrace();
 		}
 	}
@@ -171,10 +261,4 @@ public class SocketController implements ISocketController {
 		}
 	}
 
-
-	private void sendResponse(String message) throws IOException{
-		outStream.writeBytes(message + "\n");
-	}
-
 }
-
