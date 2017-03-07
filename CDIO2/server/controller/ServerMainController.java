@@ -10,10 +10,6 @@ public class ServerMainController {
 
 		int port =8000;
 
-		//Is supressed because it get instanciated in a try.
-
-		
-
 		try {
 			socket =new ServerSocketController(ip,port);
 		} catch (IOException e) {
@@ -21,6 +17,14 @@ public class ServerMainController {
 			e.printStackTrace();
 		}
 		
+	}
+	public void manualSendCommand(String input)
+	{
+	socket.sendCommand(input);	
+	}
+	public String manualGetLine()
+	{
+	return socket.getLine();	
 	}
 	public void login()
 	{		
@@ -61,7 +65,7 @@ public class ServerMainController {
 		socket.getLine();
 		socket.sendCommand("T");
 		socket.getLine();
-		socket.sendCommand("P111 \"Cleart The weight\"");
+		socket.sendCommand("P111 \"Clear The weight\"");
 		socket.getLine();
 		socket.getLine();
 		socket.sendCommand("S");
