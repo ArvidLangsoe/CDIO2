@@ -4,13 +4,15 @@ import java.util.Scanner;
 import controller.ServerMainController;
 
 public class Main {
+	
 
 	public static void main(String[] args) {
 		ServerMainController controller = new ServerMainController();
-		System.out.println("Please type the Ip of the weight");
-		controller.startConnection(getInput());
-		menu(controller);
-
+//		System.out.println("Please type the Ip of the weight");
+		String ip = "10.16.135.236";
+		controller.startConnection(ip);
+		controller.login();
+//		menu(controller);
 	}
 
 	private static void menu(ServerMainController controller) {
