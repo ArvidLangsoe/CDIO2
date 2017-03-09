@@ -30,7 +30,7 @@ public class ServerMainController {
 	{		
 		socket.sendCommand("K 3");
 		socket.getLine();
-		socket.sendCommand("RM 20 8 \"Enter UserID\" \"\" \"&3\"");
+		socket.sendCommand("RM20 8 \"Enter UserID\" \"\" \"&3\"");
 		socket.getLine();
 		socket.getLine();
 		socket.sendCommand("P111 \"Username\"");
@@ -40,7 +40,7 @@ public class ServerMainController {
 
 	public void meassureWeight()
 	{
-		socket.sendCommand("RM 20 8 \"Enter Batch Number\" \"\" \"&3\"");
+		socket.sendCommand("RM20 8 \"Enter Batch Number\" \"\" \"&3\"");
 		socket.getLine();
 		socket.getLine();
 		socket.sendCommand("P111 \"ProductName\"");
