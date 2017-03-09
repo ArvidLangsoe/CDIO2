@@ -182,7 +182,7 @@ public class SocketController implements ISocketController {
 					notifyObservers(new SocketInMessage(SocketMessageType.S, ""));
 
 					// Special type
-					responseType = " S";
+					responseType = null;
 
 					break;
 				case "K":
@@ -232,7 +232,7 @@ public class SocketController implements ISocketController {
 					break;
 				case "Q": // Quit
 					responseType = " A";
-
+					sendMessage(new SocketOutMessage(cmd + responseType));
 					notifyObservers(new SocketInMessage(SocketMessageType.Q, ""));
 					break;
 
