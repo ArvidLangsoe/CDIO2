@@ -83,7 +83,8 @@ public class ServerMainController {
 				else {
 					socket.sendCommand("P111 \"Measurement OK\"");
 				}
-
+				System.out.println("færdig");
+				
 			} catch (WrongAnswerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
