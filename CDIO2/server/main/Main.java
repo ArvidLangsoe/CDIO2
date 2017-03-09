@@ -11,8 +11,7 @@ public class Main {
 //		System.out.println("Please type the Ip of the weight");
 		String ip = "10.16.135.236";
 		controller.startConnection(ip);
-		controller.login();
-//		menu(controller);
+		controller.run();
 	}
 
 	private static void menu(ServerMainController controller) {
