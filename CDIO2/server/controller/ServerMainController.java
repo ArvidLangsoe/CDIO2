@@ -81,9 +81,11 @@ public class ServerMainController {
 					checkAnswer("K F 4");
 				}
 				else {
-					socket.sendCommand("P111 \"Measurement OK\"");
+					socket.sendCommand("P111 \"Measurement NOT OK\"");
+					checkAnswer("P111 A");
+					checkAnswer("K F 4");
 				}
-				System.out.println("færdig");
+	
 				
 			} catch (WrongAnswerException e) {
 				// TODO Auto-generated catch block
