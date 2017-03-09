@@ -7,7 +7,6 @@ import socket.SocketOutMessage;
 import weight.IWeightInterfaceController;
 import weight.IWeightInterfaceObserver;
 import weight.KeyPress;
-import weight.KeyPress.KeyPressType;
 /**
  * MainController - integrating input from socket and ui. Implements ISocketObserver and IUIObserver to handle this.
  * @author Christian Budtz
@@ -21,6 +20,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 	private KeyState keyState = KeyState.K1;
 	private double weight;
 	private String input;
+	private boolean RM20Flag = false;
 
 	public MainController(ISocketController socketHandler, IWeightInterfaceController uiController) {
 		this.init(socketHandler, uiController);
@@ -74,6 +74,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		case RM208:
 			weightController.showMessageSecondaryDisplay(message.getMessage());
 			setupSoftButtons();
+			RM20Flag = true;
 			break;
 		case S:
 			socketHandler.sendMessage(new SocketOutMessage("S S " + weight + " kg"));
@@ -121,16 +122,17 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 		switch (keyPress.getType()) {
 		case SOFTBUTTON:
 			
-			if (keyPress.getKeyNumber() == 2)
+			if (keyPress.getKeyNumber() == 2 && RM20Flag)
 			{
 				input = input.substring(0, input.length()-1);
 				weightController.showMessageSecondaryDisplay(input);
 			}
-			if (keyPress.getKeyNumber() == 3)
+			if (keyPress.getKeyNumber() == 3 && RM20Flag)
 			{
 				socketHandler.sendMessage(new SocketOutMessage("RM20 A " + input));
 				input = "";
 				clearSoftButtons();
+				RM20Flag = false;
 			}
 			break;
 		case TARA:
@@ -147,7 +149,9 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 			//Not implemented
 			break;
 		case EXIT:
-			//Not implemented
+			if (keyState.equals(KeyState.K4) || keyState.equals(KeyState.K3) ){
+				socketHandler.sendMessage(new SocketOutMessage("K F 1"));
+			} 
 			break;
 		case SEND:
 			if (keyState.equals(KeyState.K4) || keyState.equals(KeyState.K3) ){
