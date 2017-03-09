@@ -29,7 +29,7 @@ public class ServerMainController {
 	public void login()
 	{		
 		socket.sendCommand("K 3");
-		socket.getLine();
+		checkAnswer(socket.getLine());
 		socket.sendCommand("RM20 8 \"Enter UserID\" \"\" \"&3\"");
 		socket.getLine();
 		socket.getLine();
@@ -38,7 +38,7 @@ public class ServerMainController {
 		socket.getLine();
 	}
 
-	public void meassureWeight()
+	public void measureWeight()
 	{
 		socket.sendCommand("RM20 8 \"Enter Batch Number\" \"\" \"&3\"");
 		socket.getLine();
@@ -73,6 +73,14 @@ public class ServerMainController {
 		socket.sendCommand("P111 \"Measurement OK\"");
 		socket.getLine();
 		socket.getLine();
+	}
+	
+	public boolean checkAnswer(String answer) {
+		boolean success = false;
+		if (answer.equals("K A")) {
+			success = true;
+		}
+		return success;
 	}
 }
 
