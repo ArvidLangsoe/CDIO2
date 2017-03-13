@@ -96,7 +96,7 @@ public class ServerMainController {
 				{
 					measureWeight();
 				}
-				else
+				else //If error.
 				{
 					measureWeight();
 				}
