@@ -96,7 +96,7 @@ public class ServerMainController {
 				{
 					measureWeight();
 				}
-				else
+				else //If error.
 				{
 					System.out.println("ERROR Last line was: "+lastLine);
 					measureWeight();
