@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 public class ServerSocketController implements IServerSocketController {
 
@@ -55,6 +56,12 @@ public class ServerSocketController implements IServerSocketController {
 	public void flush() {
 		try {
 			sendCommand("RM20 0");
+			try {
+				TimeUnit.SECONDS.sleep(2);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			while (inFromWeight.ready()) {
 				inFromWeight.readLine();
 			}
