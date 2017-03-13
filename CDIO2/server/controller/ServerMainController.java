@@ -87,11 +87,11 @@ public class ServerMainController {
 				
 			} catch (WrongAnswerException e) {
 				String lastLine = socket.getCurrentLine();
-				if (lastLine.equals("KF 1"))
+				if (lastLine.equals("K C 1"))
 				{
 					login();
 				}
-				else if (lastLine.equals("KF 2"))
+				else if (lastLine.equals("K C 2"))
 				{
 					measureWeight();
 				}
