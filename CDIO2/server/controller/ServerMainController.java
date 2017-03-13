@@ -87,9 +87,9 @@ public class ServerMainController {
 				
 			} catch (WrongAnswerException e) {
 				String lastLine = socket.getCurrentLine();
-				if (lastLine.equals("K C 1"))
+				if (lastLine.equals("K R 3"))
 				{
-					login();
+					return;
 				}
 				else if (lastLine.equals("K C 2"))
 				{
