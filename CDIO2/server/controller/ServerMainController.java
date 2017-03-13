@@ -47,6 +47,7 @@ public class ServerMainController {
 			RM20Command("Enter UserID");
 			P111Command("Username");
 		} catch (WrongAnswerException e) {
+			socket.flush();
 			login();
 		}
 	}
