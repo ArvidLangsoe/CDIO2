@@ -53,13 +53,14 @@ public class ServerMainController {
 
 	public void measureWeight()
 	{
-		double tara = 0;
-		double netto = 0;
-		double brutto = 0;
-		double actualBrutto = 0;
-		final double TOLERANCE = 0.1;
-
+		
 		while(true) {
+			double tara = 0;
+			double netto = 0;
+			double brutto = 0;
+			double actualBrutto = 0;
+			final double TOLERANCE = 0.01;
+
 			try {
 				RM20Command("Enter Batch Number");
 				P111Command("Product Name");
@@ -86,18 +87,19 @@ public class ServerMainController {
 				
 			} catch (WrongAnswerException e) {
 				String lastLine = socket.getCurrentLine();
-				System.out.println("ERROR Last line was: "+lastLine);
+				
 				if (lastLine.equals("K R 3"))
 				{
 					return;
 				}
 				else if (lastLine.equals("K C 2"))
 				{
-					measureWeight();
+					//restart measurement
 				}
 				else //If error.
 				{
-					measureWeight();
+					System.out.println("ERROR Last line was: "+lastLine);
+					//restart measurement
 				}
 				
 			}
