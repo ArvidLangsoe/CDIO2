@@ -143,14 +143,16 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 			weightController.showMessageSecondaryDisplay(input);
 			break;
 		case ZERO:
-			//Not implemented
+			if (keyState.equals(KeyState.K4) || keyState.equals(KeyState.K3) ){
+				socketHandler.sendMessage(new SocketOutMessage("K C 2"));
+			} 
 			break;
 		case C:
 			//Not implemented
 			break;
 		case EXIT:
 			if (keyState.equals(KeyState.K4) || keyState.equals(KeyState.K3) ){
-				socketHandler.sendMessage(new SocketOutMessage("K F 1"));
+				socketHandler.sendMessage(new SocketOutMessage("K C 1"));
 			} 
 			break;
 		case SEND:
