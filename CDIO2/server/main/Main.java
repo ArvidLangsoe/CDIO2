@@ -9,7 +9,7 @@ public class Main {
 	public static void main(String[] args) {
 		ServerMainController controller = new ServerMainController();
 //		System.out.println("Please type the Ip of the weight");
-		String ip = "10.16.135.236";
+		String ip = "169.254.2.2";
 		controller.startConnection(ip);
 		controller.run();
 	}
