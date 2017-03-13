@@ -155,6 +155,9 @@ public class ServerMainController {
 			}
 
 			out = answerArr[answerArr.length-1];
+			if(out.equals("kg")){
+				out = answerArr[answerArr.length-2];
+			}
 		}
 		else if(!answer.equals(expectedAnswer)) {
 			throw new WrongAnswerException("Expected answer: " + expectedAnswer + " but was: " + answer);
