@@ -26,7 +26,6 @@ public class ServerSocketController implements IServerSocketController {
 		try {
 			outToWeight.writeBytes(command + "\n");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -42,7 +41,6 @@ public class ServerSocketController implements IServerSocketController {
 			currentLine = weightMessage;
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
