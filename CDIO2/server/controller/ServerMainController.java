@@ -54,13 +54,14 @@ public class ServerMainController {
 
 	public void measureWeight()
 	{
-		double tara = 0;
-		double netto = 0;
-		double brutto = 0;
-		double actualBrutto = 0;
-		final double TOLERANCE = 0.01;
-
+		
 		while(true) {
+			double tara = 0;
+			double netto = 0;
+			double brutto = 0;
+			double actualBrutto = 0;
+			final double TOLERANCE = 0.01;
+
 			try {
 				RM20Command("Enter Batch Number");
 				P111Command("Product Name");
