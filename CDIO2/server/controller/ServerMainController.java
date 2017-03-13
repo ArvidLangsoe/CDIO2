@@ -41,17 +41,14 @@ public class ServerMainController {
 
 	public void login()
 	{		
-
 		try {
 			socket.sendCommand("K 3");
 			checkAnswer("K A");
 			RM20Command("Enter UserID");
 			P111Command("Username");
 		} catch (WrongAnswerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			login();
 		}
-
 	}
 
 	public void measureWeight()
@@ -88,8 +85,20 @@ public class ServerMainController {
 	
 				
 			} catch (WrongAnswerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				String lastLine = socket.getCurrentLine();
+				if (lastLine.equals("KF 1"))
+				{
+					login();
+				}
+				else if (lastLine.equals("KF 2"))
+				{
+					measureWeight();
+				}
+				else
+				{
+					measureWeight();
+				}
+				
 			}
 
 		}

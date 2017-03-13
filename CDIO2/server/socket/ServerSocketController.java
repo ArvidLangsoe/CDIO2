@@ -12,6 +12,7 @@ public class ServerSocketController implements IServerSocketController {
 	Socket socket;
 	DataOutputStream outToWeight;
 	BufferedReader inFromWeight;
+	String currentLine;
 	
 	public ServerSocketController(String ip, int port) throws UnknownHostException, IOException{
 			socket=new Socket(ip,port);	
@@ -37,6 +38,7 @@ public class ServerSocketController implements IServerSocketController {
 			while(!inFromWeight.ready());
 			
 			weightMessage =inFromWeight.readLine();
+			currentLine = weightMessage;
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -46,4 +48,8 @@ public class ServerSocketController implements IServerSocketController {
 		return weightMessage;
 	}
 
+	public String getCurrentLine()
+	{
+		return currentLine;
+	}
 }
