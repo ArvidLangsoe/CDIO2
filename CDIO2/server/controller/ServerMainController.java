@@ -58,7 +58,7 @@ public class ServerMainController {
 		double netto = 0;
 		double brutto = 0;
 		double actualBrutto = 0;
-		final double TOLERANCE = 0.1;
+		final double TOLERANCE = 0.01;
 
 		while(true) {
 			try {
@@ -87,7 +87,7 @@ public class ServerMainController {
 				
 			} catch (WrongAnswerException e) {
 				String lastLine = socket.getCurrentLine();
-				System.out.println("ERROR Last line was: "+lastLine);
+				
 				if (lastLine.equals("K R 3"))
 				{
 					return;
@@ -98,6 +98,7 @@ public class ServerMainController {
 				}
 				else
 				{
+					System.out.println("ERROR Last line was: "+lastLine);
 					measureWeight();
 				}
 				
