@@ -154,7 +154,7 @@ public class ServerMainController {
 				}
 			}
 
-			out = answerArr[2];
+			out = answerArr[answerArr.length-1];
 		}
 		else if(!answer.equals(expectedAnswer)) {
 			throw new WrongAnswerException("Expected answer: " + expectedAnswer + " but was: " + answer);
