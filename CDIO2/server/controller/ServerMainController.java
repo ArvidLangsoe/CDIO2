@@ -153,8 +153,14 @@ public class ServerMainController {
 					throw new WrongAnswerException("Expected answer: " + expectedAnswer + " but was: " + answer);
 				}
 			}
+			
 
 			out = answerArr[answerArr.length-1];
+			if(answerArr[1].equals("C")){
+				if(!answerArr[2].equals(expectedArr[2])){
+					throw new WrongAnswerException("Expected answer: " + expectedAnswer + " but was: " + answer);
+				}
+			}
 			if(out.equals("kg")){
 				out = answerArr[answerArr.length-2];
 			}
