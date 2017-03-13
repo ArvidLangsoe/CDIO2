@@ -87,6 +87,7 @@ public class ServerMainController {
 				
 			} catch (WrongAnswerException e) {
 				String lastLine = socket.getCurrentLine();
+				System.out.println("ERROR Last line was: "+lastLine);
 				if (lastLine.equals("K R 3"))
 				{
 					return;
