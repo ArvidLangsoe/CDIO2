@@ -14,27 +14,6 @@ public class Main {
 		controller.run();
 	}
 
-	private static void menu(ServerMainController controller) {
-		System.out.println("Please choose between: ");
-		System.out.println("1: Start the weight meassurement.");
-		System.out.println("2: TEST MENU: Send a custom command to the weight .");
-		System.out.println("3: Exit");
-		switch (getChoice()) {
-		case 1:
-			startWeightMeasure(controller);
-			break;
-		case 2:
-			manualCommand(controller);
-			break;
-		case 3:
-			break;
-		default: {
-			System.out.println("Wrong input. please try again");
-			menu(controller);
-		}
-		}
-	}
-
 	private static void manualCommand(ServerMainController controller) {
 		System.out.println("how many returns do you expect? (1 or 2): else type:\"exit\"");
 		String weightReturns = getInput();
