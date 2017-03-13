@@ -13,18 +13,18 @@ public class ServerSocketController implements IServerSocketController {
 	DataOutputStream outToWeight;
 	BufferedReader inFromWeight;
 	String currentLine;
-	
-	public ServerSocketController(String ip, int port) throws UnknownHostException, IOException{
-			socket=new Socket(ip,port);	
-			outToWeight=new DataOutputStream(socket.getOutputStream());
-			inFromWeight=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
+
+	public ServerSocketController(String ip, int port) throws UnknownHostException, IOException {
+		socket = new Socket(ip, port);
+		outToWeight = new DataOutputStream(socket.getOutputStream());
+		inFromWeight = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
 	}
-	
+
 	@Override
 	public void sendCommand(String command) {
 		try {
-			outToWeight.writeBytes(command+"\n");
+			outToWeight.writeBytes(command + "\n");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -33,23 +33,36 @@ public class ServerSocketController implements IServerSocketController {
 
 	@Override
 	public String getLine() {
-		String weightMessage=null;
+		String weightMessage = null;
 		try {
-			while(!inFromWeight.ready());
-			
-			weightMessage =inFromWeight.readLine();
+			while (!inFromWeight.ready())
+				;
+
+			weightMessage = inFromWeight.readLine();
 			currentLine = weightMessage;
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return weightMessage;
 	}
 
-	public String getCurrentLine()
-	{
+	public String getCurrentLine() {
 		return currentLine;
+	}
+
+	@Override
+	public void flush() {
+		try {
+			sendCommand("RM20 0");
+			while (inFromWeight.ready()) {
+				inFromWeight.readLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }

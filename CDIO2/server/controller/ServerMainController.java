@@ -1,11 +1,10 @@
 package controller;
 import java.io.IOException;
-import java.util.Scanner;
-
+import socket.IServerSocketController;
 import socket.ServerSocketController;
 
 public class ServerMainController {
-	ServerSocketController socket = null;
+	IServerSocketController socket = null;
 
 	public void startConnection(String ip)
 	{

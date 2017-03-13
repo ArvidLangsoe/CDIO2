@@ -10,7 +10,8 @@ import socket.ISocketController;
  *
  */
 public class Main {
-	private static boolean gui= true;
+	//Needed if the GUI is not located on the pc.
+	//private static boolean gui= true;
 
 	public static void main(String[] args) {
 		ISocketController socketHandler = new SocketController();

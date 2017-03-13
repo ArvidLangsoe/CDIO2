@@ -3,8 +3,6 @@ package main;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
-
-import controller.ServerMainController;
 import socket.ServerSocketController;
 
 public class testmain {
@@ -28,10 +26,8 @@ public class testmain {
 			}
 			keyboard.close();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
