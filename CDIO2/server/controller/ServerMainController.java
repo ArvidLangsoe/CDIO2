@@ -94,12 +94,12 @@ public class ServerMainController {
 				}
 				else if (lastLine.equals("K C 2"))
 				{
-					measureWeight();
+					//restart measurement
 				}
 				else //If error.
 				{
 					System.out.println("ERROR Last line was: "+lastLine);
-					measureWeight();
+					//restart measurement
 				}
 				
 			}
