@@ -22,6 +22,7 @@ public class ServerMainController {
 	}
 
 	public void run() {
+		socket.getLine();
 		while(true)
 		{
 			login();
@@ -78,12 +79,12 @@ public class ServerMainController {
 				if(TOLERANCE > Math.abs(brutto - actualBrutto)) {
 					socket.sendCommand("P111 \"Measurement OK\"");
 					checkAnswer("P111 A");
-					checkAnswer("K F 4");
+					checkAnswer("K C 4");
 				}
 				else {
 					socket.sendCommand("P111 \"Measurement NOT OK\"");
 					checkAnswer("P111 A");
-					checkAnswer("K F 4");
+					checkAnswer("K C 4");
 				}
 	
 				
@@ -108,7 +109,7 @@ public class ServerMainController {
 	public void P111Command(String message) throws WrongAnswerException {
 		socket.sendCommand("P111 \"" + message + "\"");
 		checkAnswer("P111 A");
-		checkAnswer("K F 4");
+		checkAnswer("K C 4");
 
 	}
 
@@ -117,7 +118,7 @@ public class ServerMainController {
 		try {
 			socket.sendCommand("P111 \"" + message + "\"");
 			checkAnswer("P111 A");
-			checkAnswer("K F 4");
+			checkAnswer("K C 4");
 			socket.sendCommand("S");
 			measurement = Double.parseDouble(checkAnswer("S S"));
 			socket.sendCommand("T");
