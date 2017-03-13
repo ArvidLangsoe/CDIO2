@@ -73,7 +73,7 @@ public class ServerMainController {
 				brutto = tara + netto;
 
 				actualBrutto = getMeasurement("Clear The weight");
-				if(TOLERANCE > Math.abs(brutto - actualBrutto)) {
+				if(TOLERANCE > Math.abs(brutto + actualBrutto)) {
 					socket.sendCommand("P111 \"Measurement OK\"");
 					checkAnswer("P111 A");
 					checkAnswer("K C 4");
