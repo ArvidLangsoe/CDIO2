@@ -152,7 +152,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 			break;
 		case EXIT:
 			if (keyState.equals(KeyState.K4) || keyState.equals(KeyState.K3) ){
-				socketHandler.sendMessage(new SocketOutMessage("K C 1"));
+				socketHandler.sendMessage(new SocketOutMessage("K R 3"));
 			} 
 			break;
 		case SEND:
