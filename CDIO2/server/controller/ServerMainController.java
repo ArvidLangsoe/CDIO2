@@ -69,7 +69,7 @@ public class ServerMainController {
 				checkAnswer("T S");
 
 				tara = getMeasurement("Put Tara on the weight");
-				netto = getMeasurement("Put the Product one the Tara");
+				netto = getMeasurement("Put the Product on the Tara");
 				brutto = tara + netto;
 
 				actualBrutto = getMeasurement("Clear The weight");
