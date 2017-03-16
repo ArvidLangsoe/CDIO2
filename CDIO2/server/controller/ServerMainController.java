@@ -4,13 +4,13 @@ import socket.IServerSocketController;
 import socket.ServerSocketController;
 
 public class ServerMainController {
-	IServerSocketController socket = null;
+	private IServerSocketController socket = null;
+	private boolean isGuiOn;
 
-	public void startConnection(String ip)
+	public void startConnection(String ip, boolean isGuiOn)
 	{
-
 		int port =8000;
-
+		this.isGuiOn = isGuiOn;
 		try {
 			socket =new ServerSocketController(ip,port);
 		} catch (IOException e) {
@@ -21,7 +21,10 @@ public class ServerMainController {
 	}
 
 	public void run() {
+		if (!isGuiOn)
+		{
 		socket.getLine();
+		}
 		while(true)
 		{
 			login();
