@@ -72,6 +72,7 @@ public class MainController implements IMainController, ISocketObserver, IWeight
 			//Not implemented.
 			break;
 		case RM208:
+			input = "";
 			weightController.showMessageSecondaryDisplay(message.getMessage());
 			setupSoftButtons();
 			RM20Flag = true;
